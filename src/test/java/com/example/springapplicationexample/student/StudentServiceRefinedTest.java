@@ -96,7 +96,7 @@ class StudentServiceRefinedTest {
     }
 
     @Test
-    void itShoulCallFindByIdAndFindStudentByEmail() {
+    void itShouldCallFindByIdAndFindStudentByEmail() {
         Long id = 1L;
         String name ="Al";
         String email = "al.noob@gmail.com";

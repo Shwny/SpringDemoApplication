@@ -16,8 +16,10 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+// Fix tests using verify on the RepositoryMockMethod
 @ExtendWith(MockitoExtension.class)
 class StudentServiceRefinedTest {
 
@@ -38,7 +40,7 @@ class StudentServiceRefinedTest {
     @BeforeEach
     void setUp() {
         this.dummyList = List.of(new Student("Jack", "jack.noob@gmail.com", LocalDate.of(1997, Month.JULY, 15)));
-        this.dummyStudent = new Student("Jack", "jack.noob@gmail.com", LocalDate.of(1997, Month.JULY, 15));
+        this.dummyStudent = new Student(1L, "Jack", "jack.noob@gmail.com", LocalDate.of(1997, Month.JULY, 15));
         this.secondDummyStudent = new Student(2L, "John", "jack.noobie@gmail.com", LocalDate.of(1994, Month.JUNE, 14));
     }
 
@@ -46,6 +48,8 @@ class StudentServiceRefinedTest {
     void itShouldGetStudentsTest() {
         when(studentRepositoryMock.findAll()).thenReturn(dummyList);
 
+        studentService.getStudents();
+        verify(studentRepositoryMock).findAll();
         assertEquals(studentService.getStudents(), dummyList);
     }
 
@@ -57,6 +61,15 @@ class StudentServiceRefinedTest {
     }
 
     @Test
+    void itShouldCallFindStudentByEmailAndSave() {
+        when(studentRepositoryMock.findStudentByEmail(dummyStudent.getEmail())).thenReturn(Optional.empty());
+        studentService.addNewStudent(dummyStudent);
+
+        verify(studentRepositoryMock).findStudentByEmail(dummyStudent.getEmail());
+        verify(studentRepositoryMock).save(dummyStudent);
+    }
+
+    @Test
     void itShouldNotDeleteStudentTest() {
         when(studentRepositoryMock.existsById(dummyStudent.getId())).thenReturn(false);
 
@@ -64,14 +77,36 @@ class StudentServiceRefinedTest {
     }
 
     @Test
-    void itShouldNotUpdateStudentBecauseDoesNotExistTest() {
+    void itShouldCallExistsByIdAndDeleteById() {
+        when(studentRepositoryMock.existsById(dummyStudent.getId())).thenReturn(true);
+        studentService.deleteStudent(dummyStudent.getId());
 
+        verify(studentRepositoryMock).existsById(dummyStudent.getId());
+        verify(studentRepositoryMock).deleteById(dummyStudent.getId());
+    }
+
+    @Test
+    void itShouldNotUpdateStudentBecauseDoesNotExistTest() {
         // Testing if IllegalStateException is thrown when student to modify is not present in the database
         when(studentRepositoryMock.findById(dummyStudent.getId())).thenReturn(Optional.empty());
 
         assertThrows(IllegalStateException.class,
                 () -> studentService.updateStudent(dummyStudent.getId(), dummyStudent.getName(), dummyStudent.getEmail()),
                 "Student with id " + dummyStudent.getId() + " does not exist");
+    }
+
+    @Test
+    void itShoulCallFindByIdAndFindStudentByEmail() {
+        Long id = 1L;
+        String name ="Al";
+        String email = "al.noob@gmail.com";
+
+        when(studentRepositoryMock.findById(dummyStudent.getId())).thenReturn(Optional.of(dummyStudent));
+        when(studentRepositoryMock.findStudentByEmail(email)).thenReturn(Optional.empty());
+
+        studentService.updateStudent(id, name, email);
+        verify(studentRepositoryMock).findById(dummyStudent.getId());
+        verify(studentRepositoryMock).findStudentByEmail(email);
     }
 
     /*

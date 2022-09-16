@@ -22,7 +22,7 @@ The application is flawed. The architecture is essentially a dummy one, and this
 not be performed properly, and some others were performed with the wrong approach.
 It is also important to state that the PostgreSQL Database that served as a Persistency Layer for the application was managed using a Docker container. That should not 
 be a real problem since the whole application does not need to have this information, but it might be useful to know that it was not tested using a PostgreSQL instance 
-running on bare metal.
+running on bare metal. \
 UPDATE: most of the testing problems were solved using the `verify` method from the Mockito library. This allowed to verify (hihi) that the actual methods of the repository
 layer were called after the specific Service Layer method call. This solved almost all the problems that were found after the first implementation of the tests.
 

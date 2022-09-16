@@ -16,9 +16,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 @ExtendWith(MockitoExtension.class)
 class StudentServiceRefinedTest {
@@ -43,8 +41,6 @@ class StudentServiceRefinedTest {
         this.dummyStudent = new Student("Jack", "jack.noob@gmail.com", LocalDate.of(1997, Month.JULY, 15));
         this.secondDummyStudent = new Student(2L, "John", "jack.noobie@gmail.com", LocalDate.of(1994, Month.JUNE, 14));
     }
-
-    // TODO aggiungi @Before e inizializza gli oggetti Student e StudentList usati nei test
 
     @Test
     void itShouldGetStudentsTest() {

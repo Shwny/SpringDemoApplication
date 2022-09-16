@@ -1,7 +1,5 @@
 package com.example.springapplicationexample.student;
 
-import org.aspectj.lang.annotation.Before;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,7 +17,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-// Fix tests using verify on the RepositoryMockMethod
 @ExtendWith(MockitoExtension.class)
 class StudentServiceRefinedTest {
 
@@ -61,7 +58,7 @@ class StudentServiceRefinedTest {
     }
 
     @Test
-    void itShouldCallFindStudentByEmailAndSave() {
+    void itShouldCallFindStudentByEmailAndSaveTest() {
         when(studentRepositoryMock.findStudentByEmail(dummyStudent.getEmail())).thenReturn(Optional.empty());
         studentService.addNewStudent(dummyStudent);
 
@@ -77,7 +74,7 @@ class StudentServiceRefinedTest {
     }
 
     @Test
-    void itShouldCallExistsByIdAndDeleteById() {
+    void itShouldCallExistsByIdAndDeleteByIdTest() {
         when(studentRepositoryMock.existsById(dummyStudent.getId())).thenReturn(true);
         studentService.deleteStudent(dummyStudent.getId());
 
@@ -96,30 +93,28 @@ class StudentServiceRefinedTest {
     }
 
     @Test
-    void itShouldCallFindByIdAndFindStudentByEmail() {
-        Long id = 1L;
-        String name ="Al";
-        String email = "al.noob@gmail.com";
+    void itShouldCallFindByIdAndFindStudentByEmailTest() {
+        Long new_id = 1L;
+        String new_name ="Al";
+        String new_email = "al.noob@gmail.com";
 
         when(studentRepositoryMock.findById(dummyStudent.getId())).thenReturn(Optional.of(dummyStudent));
-        when(studentRepositoryMock.findStudentByEmail(email)).thenReturn(Optional.empty());
+        when(studentRepositoryMock.findStudentByEmail(new_email)).thenReturn(Optional.empty());
 
-        studentService.updateStudent(id, name, email);
+        studentService.updateStudent(new_id, new_name, new_email);
         verify(studentRepositoryMock).findById(dummyStudent.getId());
-        verify(studentRepositoryMock).findStudentByEmail(email);
+        verify(studentRepositoryMock).findStudentByEmail(new_email);
     }
 
-    /*
     @Test
     void itShouldNotUpdateStudentBecauseEmailIsAlreadyTakenTest() {
 
-        // Testing if IllegalStateException is thrown when the email of the student to modify is already taken
         when(studentRepositoryMock.findById(dummyStudent.getId())).thenReturn(Optional.of(dummyStudent));
-        when(studentRepositoryMock.findStudentByEmail(dummyStudent.getEmail())).thenReturn(Optional.of(secondDummyStudent));
+        when(studentRepositoryMock.findStudentByEmail(secondDummyStudent.getEmail())).thenReturn(Optional.of(dummyStudent));
 
         assertThrows(IllegalStateException.class,
-                () -> studentService.updateStudent(1L, "Al", "jack.noobie@gmail.com"),
+                () -> studentService.updateStudent(1L, "Al", secondDummyStudent.getEmail()),
                 "Email for student " + dummyStudent.getId() + " already taken");
     }
-    */
+
 }
